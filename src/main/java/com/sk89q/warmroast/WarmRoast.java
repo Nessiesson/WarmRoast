@@ -197,7 +197,7 @@ public class WarmRoast extends TimerTask {
             @Override
             protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
                 getData().clear();
-                response.sendRedirect("/stack");
+                response.sendRedirect("/");
             }
         }), "/reset");
 
