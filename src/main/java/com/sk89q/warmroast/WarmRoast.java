@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.Comparator;
@@ -155,8 +156,14 @@ public class WarmRoast extends TimerTask {
                 return;
             }
         }
-        
-        ThreadInfo[] threadDumps = threadBean.dumpAllThreads(false, false);
+
+        ThreadInfo[] threadDumps = null;
+        try {
+            threadDumps = threadBean.dumpAllThreads(false, false);
+        } catch (UndeclaredThrowableException e) {
+            System.exit(3);
+        }
+
         for (ThreadInfo threadInfo : threadDumps) {
             String threadName = threadInfo.getThreadName();
             StackTraceElement[] stack = threadInfo.getStackTrace();
