@@ -1,5 +1,6 @@
 $(".name").on("click", function(event) {
     var $parent = $(this).parent();
+    console.log($parent);
     open($parent);
 });
 
@@ -49,3 +50,21 @@ $(".name").on("mouseenter", function(event) {
 
 $(".loading").hide();
 $(".stack").show();
+
+var refreshTimer = setInterval(reloadStack, 5000);
+
+function reloadStack() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("stack").innerHTML = this.responseText;;
+        $(".name").on("click", function(event) {
+            var $parent = $(this).parent();
+            console.log($parent);
+            open($parent);
+        });
+    }
+    };
+    xhttp.open("GET", "/ajax", true);
+    xhttp.send();
+}

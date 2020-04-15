@@ -193,6 +193,7 @@ public class WarmRoast extends TimerTask {
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");
         context.addServlet(new ServletHolder(new DataViewServlet(this)), "/stack");
+        context.addServlet(new ServletHolder(new DataViewServletAjax(this)), "/ajax");
         context.addServlet(new ServletHolder(new HttpServlet() {
             @Override
             protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

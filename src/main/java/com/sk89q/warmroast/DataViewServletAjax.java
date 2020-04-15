@@ -18,22 +18,21 @@
 
 package com.sk89q.warmroast;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collection;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
 
-public class DataViewServlet extends HttpServlet {
-    
+public class DataViewServletAjax extends HttpServlet {
+
     private static final long serialVersionUID = -2331397310804298286L;
-    
+
     private final WarmRoast roast;
 
-    public DataViewServlet(WarmRoast roast) {
+    public DataViewServletAjax(WarmRoast roast) {
         this.roast = roast;
     }
 
@@ -45,14 +44,7 @@ public class DataViewServlet extends HttpServlet {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
-        
         PrintWriter w = response.getWriter();
-        w.println("<!DOCTYPE html><html><head><title>WarmRoast</title>");
-        w.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
-        w.println("</head><body>");
-        w.println("<h1>WarmRoast</h1>");
-        w.println("<div class=\"loading\">Downloading snapshot; please wait...</div>");
-        w.println("<div class=\"stack\" id=\"stack\" style=\"display: none\">");
         synchronized (roast) {
             Collection<StackNode> nodes = roast.getData().values();
             for (StackNode node : nodes) {
@@ -63,20 +55,5 @@ public class DataViewServlet extends HttpServlet {
                 		"(Thread filter does not match thread?)</p>");
             }
         }
-        w.println("</div>");
-        w.println("<p>");
-        w.println("<a href=\"reset\">Reset</a>");
-        w.println("</p>");
-        w.println("<p class=\"legend\">Legend: ");
-        w.println("<span class=\"matched\">Mapped</span> ");
-        w.println("<span class=\"multiple-matches\">Multiple Mappings</span> ");
-        w.println("</p>");
-        w.println("<div id=\"overlay\"></div>");
-        w.println("<p class=\"footer\">");
-        w.println("Icons from <a href=\"http://www.fatcow.com/\">FatCow</a> &mdash; ");
-        w.println("<a href=\"http://github.com/sk89q/warmroast\">github.com/sk89q/warmroast</a></p>");
-        w.println("<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js\"></script>");
-        w.println("<script src=\"warmroast.js\"></script>");
-        w.println("</body></html>");
     }
 }
