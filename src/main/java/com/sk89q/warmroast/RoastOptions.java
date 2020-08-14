@@ -45,6 +45,9 @@ public class RoastOptions {
 
     @Parameter(names = { "--interval" }, description = "The sample rate, in milliseconds")
     public Integer interval = 100;
+
+    @Parameter(names = { "--resetinterval" }, description = "How often the internal data is cleared (for long-time usage), in seconds")
+    public Integer resetInterval = 60 * 60;
     
     @Parameter(names = { "--timeout" }, description = "The number of seconds before ceasing sampling (optional)")
     public Integer timeout;

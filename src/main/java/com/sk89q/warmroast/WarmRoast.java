@@ -67,8 +67,10 @@ public class WarmRoast extends TimerTask {
             "------------------------------------------------------------------------";
     
     private final int interval;
+    private final int resetInterval;
     private final VirtualMachine vm;
     private final Timer timer = new Timer("Roast Pan", true);
+    private final Timer resetTimer = new Timer();
     private final McpMapping mapping = new McpMapping();
     private final SortedMap<String, StackNode> nodes = new TreeMap<>();
     private JMXConnector connector;
@@ -77,9 +79,10 @@ public class WarmRoast extends TimerTask {
     private String filterThread;
     private long endTime = -1;
     
-    public WarmRoast(VirtualMachine vm, int interval) {
+    public WarmRoast(VirtualMachine vm, int interval, int resetInterval) {
         this.vm = vm;
         this.interval = interval;
+        this.resetInterval = resetInterval;
     }
     
     public Map<String, StackNode> getData() {
@@ -187,6 +190,12 @@ public class WarmRoast extends TimerTask {
 
     public void start(InetSocketAddress address) throws Exception {
         timer.scheduleAtFixedRate(this, interval, interval);
+        resetTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public synchronized void run() {
+                getData().clear();
+            }
+        }, 1000 * resetInterval, 1000 * resetInterval);
         
         Server server = new Server(address);
 
@@ -313,7 +322,7 @@ public class WarmRoast extends TimerTask {
         
         InetSocketAddress address = new InetSocketAddress(opt.bindAddress, opt.port);
 
-        WarmRoast roast = new WarmRoast(vm, opt.interval);
+        WarmRoast roast = new WarmRoast(vm, opt.interval, opt.resetInterval);
         if (opt.mappingsDir != null) {
             File dir = new File(opt.mappingsDir);
             File joined = new File(dir, "joined.srg");
